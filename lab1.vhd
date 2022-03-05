@@ -42,5 +42,12 @@ architecture Behavioral of main is
 begin
     led7_seg_o <= "00100101";
     led7_an_o <= "1110";
-
+    --variable h: natural;
+    --h := 0;
+     -- for i in v'range loop
+     --   if v(i) = '1' then
+     --     h := h + 1;
+     --   end if;
+    --  end loop;
+   -- result = h mod 2 ;
 end Behavioral;
