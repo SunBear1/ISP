@@ -1,4 +1,3 @@
-----------------------------------------------------------------------------------
 -- Company: 
 -- Engineer: 
 -- 
@@ -37,28 +36,39 @@ Port ( sw_i : in  STD_LOGIC_VECTOR (7 downto 0);
 end lab1;
 
 architecture Behavioral of lab1 is
-    signal wynik : Natural := 0;
+    signal wynik : STD_LOGIC := '0';
     signal number: Natural := 0;
 begin
 
 
---led7_an_o <= "1110";
+led7_an_o <= "1110";
 tb: process
 begin 
     number <= 0;
+    wynik <= '0';
     for I in 0 to 7 loop
-        if sw_i(I) = '1' then 
+        if sw_i(I) = '1' then --tu jest błąd, nie wchodzi do tego ifa
             number <= number + 1;
+            wynik <= sw_i(I) xor wynik;
         end if;
     end loop;
+    
+if wynik = '1' then
+led7_seg_o <= "00000011";
 
-wynik <= number mod 2;
+else 
+led7_seg_o <= "11111100";
+end if;
+
+wait;
 
 end process;
 
-with wynik select 
-    led7_seg_o    <=   "01100001" when 0,  --0 
-              "00000011" when 1,  --1 
-              "11111100"   when others;     -- inne 
+--with wynik select 
+--    led7_seg_o    <=   "01100001" when '0',  --0 
+--              "00000011" when '1',  --1 
+--              "11111100"   when others;     -- inne 
 
-end Behavioral;
+
+
+end Behavioral; 
