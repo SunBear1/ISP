@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 03/05/2022 01:05:14 PM
+-- Create Date: 03/05/2022 06:31:46 PM
 -- Design Name: 
--- Module Name: main - Behavioral
+-- Module Name: Parzystosc - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -21,33 +21,44 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.std_logic_arith.all;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
+---- Uncomment the following library declaration if instantiating
+---- any Xilinx primitives in this code.
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity main is
-    Port ( sw_i : in STD_LOGIC_VECTOR (7 downto 0);
-           led7_an_o : out STD_LOGIC_VECTOR (3 downto 0);
-           led7_seg_o : out STD_LOGIC_VECTOR (7 downto 0));
-end main;
+entity lab1 is
+Port ( sw_i : in  STD_LOGIC_VECTOR (7 downto 0);
+           led7_an_o : out  STD_LOGIC_VECTOR (3 downto 0);
+           led7_seg_o : out  STD_LOGIC_VECTOR (7 downto 0));
+end lab1;
 
-architecture Behavioral of main is
-
+architecture Behavioral of lab1 is
+    signal wynik : Natural := 0;
+    signal number: Natural := 0;
 begin
-    led7_seg_o <= "00100101";
-    led7_an_o <= "1110";
-    --variable h: natural;
-    --h := 0;
-     -- for i in v'range loop
-     --   if v(i) = '1' then
-     --     h := h + 1;
-     --   end if;
-    --  end loop;
-   -- result = h mod 2 ;
+
+
+--led7_an_o <= "1110";
+tb: process
+begin 
+    number <= 0;
+    for I in 0 to 7 loop
+        if sw_i(I) = '1' then 
+            number <= number + 1;
+        end if;
+    end loop;
+
+wynik <= number mod 2;
+
+end process;
+
+with wynik select 
+    led7_seg_o    <=   "01100001" when 0,  --0 
+              "00000011" when 1,  --1 
+              "11111100"   when others;     -- inne 
+
 end Behavioral;
