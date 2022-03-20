@@ -51,10 +51,9 @@ end top;
 
 architecture Behavioral of top is
 
-signal reset_btn : STD_LOGIC := '0';
-signal lightem_up : STD_LOGIC_VECTOR := sw_i(7 downto 0);
 signal hex_values : STD_LOGIC_VECTOR (3 downto 0) := "0000";
-signal led_digits : STD_LOGIC_VECTOR (7 downto 0) := "00000000";
+signal dot_values : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+signal led_digits : STD_LOGIC_VECTOR (6 downto 0) := "0000000";
 signal digits : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000000";
 signal active_an: std_logic_vector(1 downto 0) := "00";
 
@@ -67,12 +66,46 @@ process(rst_i,clk_i)
     --zegar
     if (rst_i = '1') then 
         counter := 0;
-      elsif (rising_edge(clk_i)) then 
+    elsif (rising_edge(clk_i)) then 
         if(counter < N) then 
             counter := counter + 1;
         else
             counter := 0;
-            active_an <= active_an + 1;
+            if btn_i(0) = '1' then 
+                digits(7 downto 1) <= led_digits;    
+            end if;
+            if btn_i(1) = '1' then 
+                digits(15 downto 9) <= led_digits;
+            end if;
+            if btn_i(2) = '1' then 
+                digits(23 downto 17) <= led_digits;
+            end if;
+            if btn_i(3) = '1' then 
+                digits(31 downto 25) <= led_digits;
+            end if;
+            if btn_i(4) = '1' then 
+               digits(31 downto 0) <= "00000011000000110000001100000011";
+            end if;
+            if sw_i(4) = '1' then
+                digits(0) <= '0';
+            end if;
+            if sw_i(5) = '1' then
+                digits(8) <= '0';
+            end if;
+            if sw_i(6) = '1' then
+                digits(16) <= '0';
+            end if;
+            if sw_i(7) = '1' then
+                digits(24) <= '0';
+            end if;
+            --digits(0) <= '0' when sw_i(4) = '1' else 
+--              '1';
+--digits(8) <= '0' when sw_i(5) = '1' else 
+--              '1';
+                --digits(16) <= '0' when sw_i(6) = '1' else 
+--              '1';
+                --digits(24) <= '0' when sw_i(7) = '1' else 
+--              '1';
         end if;    
       end if;
 end process;
@@ -80,56 +113,63 @@ end process;
 hex_values <= sw_i(3 downto 0);
 
 with hex_values select
-    led_digits <= "00000011" when "0000",
-                "10011111" when "0001",
-                "00100101" when "0010",
-                "00001101" when "0011",
-                "10011001" when "0100",
-                "01001001" when "0101",
-                "01000001" when "0110",
-                "00011111" when "0111",
-                "00000001" when "1000",
-                "00001001" when "1001",
-                "00010001" when "1010",
-                "11000001" when "1011",
-                "01100011" when "1100",
-                "10000101" when "1101",
-                "01100001" when "1110",
-                "01110001" when "1111",
-                "00000000" when others;
-    
+    led_digits <= "0000001" when "0000",
+                "1001111" when "0001",
+                "0010010" when "0010",
+                "0000110" when "0011",
+                "1001100" when "0100",
+                "0100100" when "0101",
+                "0100000" when "0110",
+                "0001111" when "0111",
+                "0000000" when "1000",
+                "0000100" when "1001",
+                "0001000" when "1010",
+                "1100000" when "1011",
+                "0110001" when "1100",
+                "1000010" when "1101",
+                "0110000" when "1110",
+                "0111000" when "1111",
+                "0000000" when others;
+   
+--dot_values <= sw_i(7 downto 4);
+
+--with dot_values select
+--    led_digits(7) <= '1' when "0000",
+--                '0' when others;
+                      
+--kropki
+--digits(0) <= '0' when sw_i(4) = '1' else 
+--              '1';
+--digits(8) <= '0' when sw_i(5) = '1' else 
+--              '1';
+--digits(16) <= '0' when sw_i(6) = '1' else 
+--              '1';
+--digits(24) <= '0' when sw_i(7) = '1' else 
+--              '1';
 
 --wybór wyświetlacza
-digits(7 downto 0) <= led_digits when btn_i(0) = '1';                                  
-digits(15 downto 8) <= led_digits when btn_i(1) = '1';                                  
-digits(23 downto 16) <= led_digits when btn_i(2) = '1';                                  
-digits(31 downto 24) <= led_digits when btn_i(3) = '1';      
+--digits(7 downto 1) <= led_digits when btn_i(0) = '1';                                  
+--digits(15 downto 9) <= led_digits when btn_i(1) = '1';                                  
+--digits(23 downto 17) <= led_digits when btn_i(2) = '1';                                  
+--digits(31 downto 25) <= led_digits when btn_i(3) = '1';   
      
 --przycisk resetowy                    
-digits(31 downto 0) <= "00000011000000110000001100000011" when btn_i(4) = '1';
+--digits(31 downto 0) <= "00000011000000110000001100000011" when btn_i(4) = '1';
 
---kropki
-digits(7) <= '1' when sw_i(4) = '1' 
-                    else '0';
-digits(15) <= '1' when sw_i(5) = '1' 
-                    else '0';
-digits(23) <= '1' when sw_i(6) = '1' 
-                    else '0';
-digits(31) <= '1' when sw_i(7) = '1' 
-                    else '0';           
+          
 
 --zapalanie wyświetlaczy
-led7_seg_o <=  digits(31 downto 24) when (active_an = "00" and rst_i = '0') else
-						digits(23 downto 16) when (active_an = "01" and rst_i = '0') else
-						digits(15 downto 8) when (active_an = "10" and rst_i = '0') else
-						digits(7 downto 0) when (active_an = "11" and rst_i = '0') else
-						"00000000";
+led7_seg_o <=  digits(31 downto 24) when (btn_i(3) = '1' and rst_i = '0') else
+						digits(23 downto 16) when (btn_i(2) = '1' and rst_i = '0') else
+						digits(15 downto 8) when (btn_i(1) = '1' and rst_i = '0') else
+						digits(7 downto 0) when (btn_i(0) = '1' and rst_i = '0') else
+						"11111111";
 						
-led7_an_o <=   "0111" when (active_an = "00" and rst_i = '0') else 
-						"1011" when (active_an = "01" and rst_i = '0') else
-						"1101" when (active_an = "10" and rst_i = '0') else
-						"1110" when (active_an = "11" and rst_i = '0') else
-						"0000"; 
+led7_an_o <=   "0111" when (btn_i(3) = '1' and rst_i = '0') else 
+						"1011" when (btn_i(2) = '1' and rst_i = '0') else
+						"1101" when (btn_i(1) = '1' and rst_i = '0') else
+						"1110" when (btn_i(0) = '1' and rst_i = '0') else
+						"1111"; 
 
 
 end Behavioral;
