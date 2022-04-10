@@ -1,24 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/20/2022 12:42:58 PM
--- Design Name: 
--- Module Name: tb - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -38,7 +17,6 @@ end tb;
 architecture Behavioral of tb is
 component top is
      Port ( clk_i : in STD_LOGIC;
-           rst_i : in STD_LOGIC;
            RXD_i : in STD_LOGIC;
            led7_an_o : out STD_LOGIC_VECTOR (3 downto 0);
            led7_seg_o : out STD_LOGIC_VECTOR (7 downto 0));
@@ -55,7 +33,6 @@ constant DUTY_CYCLE : real := 0.25;
 
 begin
 dut: top port map(
-rst_i => rst,
 clk_i => clk,
 RXD_i => RXD,
 led7_an_o => led7_an,
@@ -72,25 +49,25 @@ begin
     wait for 3ms;
     
     RXD <= '0';
-    wait for 1ms;
+    wait for 0.2ms;
     
     RXD <= '1';
-    wait for 1ms;
+    wait for 0.2ms;
     RXD <= '0';
-    wait for 1ms;
-    RXD <= '1';
-    wait for 1ms;
-    RXD <= '1';
-    wait for 1ms;
+    wait for 0.2ms;
     RXD <= '0';
-    wait for 1ms;
+    wait for 0.2ms;
     RXD <= '1';
-    wait for 1ms;
+    wait for 0.2ms;
+    RXD <= '0';
+    wait for 0.2ms;
     RXD <= '1';
-    wait for 1ms;
+    wait for 0.2ms;
+    RXD <= '0';
+    wait for 0.2ms;
     RXD <= '0';
     
-    wait for 1ms;
+    wait for 0.2ms;
     RXD <= '1';
     wait for 3ms;
 
