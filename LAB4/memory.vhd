@@ -32,54 +32,39 @@ signal transmission_started : STD_LOGIC  := '0';
 
 begin
 
--- check transmission state (started, stopped)
-process(RXD_i, bits_counter)
-variable counter: integer:= 0;
-    begin   -- czy tak można wykryć zmiane z '1' na '0'?
-        if (RXD_i = '0' and bits_counter = 0) then 
-            -- wykrylismy poczatkowy bit nadawania sygnalu '0'
-            transmission_started <= '1';
-        elsif bits_counter = 9 then
-            transmission_started <= '0';                      
-        end if;
-end process;
-
 -- count time for one bit
-process(clk_i, time_counter)
-constant frequency: integer := 10416; 
+process(clk_i, time_counter,RXD_i,bits_counter)
+constant frequency: integer := 5208; 
+variable bits_cnt_new: integer := 0;
     begin
-        if bits_counter = 9 then
-                bits_counter <= 0;
-        end if;
-        if (transmission_started = '1') then
-                if (rising_edge(clk_i)) then
-                    if(time_counter = frequency/2) then
-                        bits_counter <= bits_counter + 1;
-                        time_counter <= time_counter + 1;
-                        clk_new_bit <= '1';
-                    elsif time_counter = frequency then
-                           clk_new_bit <= '0';
-                           time_counter <= 0;
-                    else
-                        time_counter <= time_counter + 1;
-                        clk_new_bit <= '0';   
-                    end if;                                   
-                end if;
+        if (rising_edge(clk_i)) then
+            if transmission_started = '1' then   
+                if(time_counter = frequency/2) then
+                    bits_cnt_new := bits_cnt_new + 1;
+                    time_counter <= time_counter + 1;
+                    if bits_cnt_new /= 10 and bits_cnt_new /= 1 then
+                        body_message(bits_cnt_new-2) <= RXD_i;
+                    elsif bits_cnt_new = 10 then
+                        bits_cnt_new := 0;
+                    end if;
+                elsif time_counter = frequency then
+                      if bits_cnt_new = 0 then  -- bylo 8 jest 0
+                        --bits_counter <= 0;
+                        transmission_started <= '0';
+                      end if;
+                       time_counter <= 0;
+                else
+                    time_counter <= time_counter + 1;  
+                end if; 
+            else
+                if RXD_i = '0' and bits_cnt_new = 0 then
+                    transmission_started <= '1';
+                    --bits_counter <= bits_counter + 1;
+                end if;  
+            end if;                                  
         end if;
 end process;
     
--- compose message from RXD_i signal
-process(RXD_i, bits_counter)
-
-variable counter: integer:= 0;
-    begin  -- mayby sequential ?
-        if (transmission_started = '1') then
-            if (clk_new_bit = '1' and bits_counter /=  9) then
-                body_message(bits_counter - 1) <= RXD_i;                                   
-            end if;
-        end if;
-end process;
-
 with body_message(3 downto 0) select
     digits(7 downto 0) <= "00000011" when "0000",
                 "10011111" when "0001",

@@ -36,7 +36,7 @@ process(clk_i)
         counter := counter + 1;
         if counter = 50000 then
             counter := 0;
-            --od≈õwie≈ºanie wy≈õwietlacza
+            --odúwieøanie wyúwietlacza
             anoda_selector <= anoda_selector + 1;
         end if;
     end if;

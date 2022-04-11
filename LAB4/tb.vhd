@@ -45,31 +45,39 @@ clk <= not clk after 10ns;
 --    else '0' after (PERIOD * DUTY_CYCLE);
 butons: process
 begin   
+    --constant freq: double := 0.10416; 
     RXD <= '1';
     wait for 3ms;
+    -- 0 - start
+    RXD <= '0';
+    wait for 0.1ms;
+    -- 1
+    RXD <= '1';
+    wait for 0.1ms;
+    
+    RXD <= '1';
+    wait for 0.1ms;
+    
+    RXD <= '1';
+    wait for 0.1ms;
     
     RXD <= '0';
-    wait for 0.2ms;
+    wait for 0.1ms;
+    
+    RXD <= '0';
+    wait for 0.1ms;
     
     RXD <= '1';
-    wait for 0.2ms;
-    RXD <= '0';
-    wait for 0.2ms;
-    RXD <= '0';
-    wait for 0.2ms;
-    RXD <= '1';
-    wait for 0.2ms;
-    RXD <= '0';
-    wait for 0.2ms;
-    RXD <= '1';
-    wait for 0.2ms;
-    RXD <= '0';
-    wait for 0.2ms;
-    RXD <= '0';
+    wait for 0.1ms;
     
-    wait for 0.2ms;
     RXD <= '1';
-    wait for 3ms;
+    wait for 0.1ms;
+    -- 8
+    RXD <= '1';
+    wait for 0.1ms;
+    -- 9 - end
+    RXD <= '1';
+    wait for 0.1ms;
 
 end process;
 end Behavioral;
