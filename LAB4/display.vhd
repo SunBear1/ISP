@@ -17,6 +17,8 @@ entity display is
                
            digits_in : in STD_LOGIC_VECTOR (15 downto 0);
            
+           rst_i : in STD_LOGIC;
+           
            led7_an_o : out STD_LOGIC_VECTOR (3 downto 0);
 
            led7_seg_o : out STD_LOGIC_VECTOR (7 downto 0));
@@ -26,7 +28,7 @@ architecture Behavioral of display is
 signal dot_values : STD_LOGIC_VECTOR (3 downto 0) := "0000";
 signal clk_div : STD_LOGIC  := '0';
 -- anoda_selector: std_logic_vector(1 downto 0) := "00";
-signal anoda_selector: std_logic_vector(1 downto 0) := "00";
+signal anoda_selector: std_logic := '0';
 begin
 
 process(clk_i)
@@ -36,19 +38,17 @@ process(clk_i)
         counter := counter + 1;
         if counter = 50000 then
             counter := 0;
-            --odœwie¿anie wyœwietlacza
-            anoda_selector <= anoda_selector + 1;
+            --od?wie?anie wy?wietlacza
+            anoda_selector <= not anoda_selector;
         end if;
     end if;
 end process;
 
 
-led7_seg_o <= digits_in(15 downto 8) when (anoda_selector = "10") else
-						digits_in(7 downto 0) when (anoda_selector = "11");
+led7_seg_o <= digits_in(15 downto 8) when (anoda_selector = '0' and rst_i = '0') else
+						digits_in(7 downto 0) when (anoda_selector = '1' and rst_i = '0');
 						
-led7_an_o <=   "0111" when (anoda_selector = "00") else 
-                    "1011" when (anoda_selector = "01") else
-                    "1101" when (anoda_selector = "10") else
-                    "1110" when (anoda_selector = "11");
+led7_an_o <=  "1101" when (anoda_selector = '0' and rst_i = '0') else
+                    "1110" when (anoda_selector = '1' and rst_i = '0');
                     
 end Behavioral;

@@ -15,6 +15,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 entity memory is
     Port ( clk_i : in STD_LOGIC;
            RXD_i : in STD_LOGIC;
+           rst_i : in STD_LOGIC;
            digits_out : out STD_LOGIC_VECTOR (15 downto 0));
 end memory;
 
@@ -34,9 +35,13 @@ begin
 
 -- count time for one bit
 process(clk_i, time_counter,RXD_i,bits_counter)
-constant frequency: integer := 5208; 
+constant frequency: integer := 10416; 
 variable bits_cnt_new: integer := 0;
     begin
+        if rst_i = '1' then
+                digits(7 downto 0) <= "11111111";  
+                digits(15 downto 8) <= "11111111";
+        end if;
         if (rising_edge(clk_i)) then
             if transmission_started = '1' then   
                 if(time_counter = frequency/2) then
