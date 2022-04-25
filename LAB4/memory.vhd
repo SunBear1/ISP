@@ -34,14 +34,15 @@ signal transmission_started : STD_LOGIC  := '0';
 begin
 
 -- count time for one bit
-process(clk_i, time_counter,RXD_i,bits_counter)
+process(clk_i, time_counter,RXD_i,bits_counter,rst_i)
 constant frequency: integer := 10416; 
 variable bits_cnt_new: integer := 0;
     begin
         if rst_i = '1' then
-                digits(7 downto 0) <= "11111111";  
-                digits(15 downto 8) <= "11111111";
-        end if;
+                --digits(7 downto 0) <= "11111111";  
+                --digits(15 downto 8) <= "11111111";
+                body_message(7 downto 0) <= "00000000";
+        else
         if (rising_edge(clk_i)) then
             if transmission_started = '1' then   
                 if(time_counter = frequency/2) then
@@ -67,6 +68,7 @@ variable bits_cnt_new: integer := 0;
                     --bits_counter <= bits_counter + 1;
                 end if;  
             end if;                                  
+        end if;
         end if;
 end process;
     

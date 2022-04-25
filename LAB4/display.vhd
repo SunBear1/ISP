@@ -45,10 +45,17 @@ process(clk_i)
 end process;
 
 
-led7_seg_o <= digits_in(15 downto 8) when (anoda_selector = '0' and rst_i = '0') else
-						digits_in(7 downto 0) when (anoda_selector = '1' and rst_i = '0');
+--led7_seg_o <= digits_in(15 downto 8) when (anoda_selector = '0' and rst_i = '0') else
+--						digits_in(7 downto 0) when (anoda_selector = '1' and rst_i = '0');
 						
-led7_an_o <=  "1101" when (anoda_selector = '0' and rst_i = '0') else
-                    "1110" when (anoda_selector = '1' and rst_i = '0');
+--led7_an_o <=  "1101" when (anoda_selector = '0' and rst_i = '0') else
+--                    "1110" when (anoda_selector = '1' and rst_i = '0');
+
+led7_seg_o <= digits_in(15 downto 8) when (anoda_selector = '0') else
+						digits_in(7 downto 0) when (anoda_selector = '1');
+						
+led7_an_o <=  "1101" when (anoda_selector = '0') else
+                    "1110" when (anoda_selector = '1');
+
                     
 end Behavioral;
